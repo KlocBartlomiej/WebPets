@@ -13,12 +13,13 @@ class Pet
     private array $tags;
     private Status $status;
 
-    public function __construct(int $id, array $category, string $name, array $photoUrls, array $tags, string $status) {
+    public function __construct(int $id, string $category, string $name, string $photoUrls, string $tags, string $status)
+    {
         $this->id = $id;
-        $this->category = $category;
+        $this->category = explode(',', $category);
         $this->name = $name;
-        $this->photoUrls = $photoUrls;
-        $this->tags = $tags;
+        $this->photoUrls = explode(',', $photoUrls);
+        $this->tags = explode(',', $tags);
         $this->status = Status::getStatusFromString($status);
     }
 
@@ -27,9 +28,9 @@ class Pet
         return $this->id;
     }
 
-    public function getCategory(): array
+    public function getCategory(): string
     {
-        return $this->category;
+        return implode(',', $this->category);
     }
 
     public function getName(): string
@@ -37,14 +38,14 @@ class Pet
         return $this->name;
     }
 
-    public function getPhotoUrls(): array
+    public function getPhotoUrls(): string
     {
-        return $this->photoUrls;
+        return implode(',', $this->photoUrls);
     }
 
-    public function getTags(): array
+    public function getTags(): string
     {
-        return $this->tags;
+        return implode(',', $this->tags);
     }
 
     public function getStatus(): string

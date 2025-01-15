@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:heading>
-        Add a new pet
+        Edit your pet data
     </x-slot:heading>
 
-    <x:formNew></x:formNew>
+    <x:formPet :pet=$pet></x:formPet>
 </x-layout>
