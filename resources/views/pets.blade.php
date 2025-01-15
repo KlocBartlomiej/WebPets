@@ -3,16 +3,16 @@
         Manage your pets ! :D
     </x-slot:heading>
 
-    <x-link  href="/pets">
+    <x-link  href="/petFromNew">
         Add a new pet
     </x-link>
     <x-link  href="/pets">
         Show all your pets
     </x-link>
-    <x-link  href="/pets">
+    <!-- <x-link  href="/pets">
         Edit your pet data
     </x-link>
     <x-link  href="/pets">
         Delete your pet from the application
-    </x-link>
+    </x-link> -->
 </x-layout>

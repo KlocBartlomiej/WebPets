@@ -26,7 +26,7 @@
                 <div class="relative flex h-16 items-center justify-between">
                     <div class="flex space-x-4">
                         <a href="/" class="{{ request()->is('/') ? 'bg-gray-900 text-white' : 'text-gray-100 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
-                        <a href="/pets" class="{{ request()->is('pets') ? 'bg-gray-900 text-white' : 'text-gray-100 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Pets</a>
+                        <a href="/petResource" class="{{ request()->is('petResource') ? 'bg-gray-900 text-white' : 'text-gray-100 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Pets</a>
                     </div>
                 </div>
             </div>
