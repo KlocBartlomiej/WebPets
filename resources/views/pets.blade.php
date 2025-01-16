@@ -6,7 +6,7 @@
     <x-link  href="/petFromNew">
         Add a new pet
     </x-link>
-    <x-link  href="/pets">
+    <x-link  href="/pet">
         Show all your pets
     </x-link>
     <!-- <x-link  href="/pets">

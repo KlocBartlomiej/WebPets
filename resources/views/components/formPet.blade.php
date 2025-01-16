@@ -1,6 +1,6 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form class="space-y-5" action="/pets" method="POST">
+    <form class="space-y-5" action="/pet" method="POST">
       @csrf
       @method('PUT')
       <div>
@@ -9,7 +9,7 @@
           <input
             value="<?= isset($pet) ? $pet->getId() : '' ?>"
             type="number"
-            name="email"
+            name="id"
             id="id"
             required
             onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"

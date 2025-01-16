@@ -15,7 +15,27 @@ class PetController extends Controller
         $this->client = new Client();
     }
 
-    public function getAllPets()
+    public function updateAllOfGivenPet($id)
+    {
+        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
+        return view('pet.formPet', ['pet' => $pet]);
+    }
+
+    public function uploadImgForGivenPet() {
+        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
+        return view('pet.formImg', ['pet' => $pet]);
+    }
+
+    // it needs only id and a file
+    public function updateNameAndStatusOfGivenPet($id)
+    {
+        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
+        return view('pet.formShort', ['pet' => $pet]);
+    }
+
+    // get on /pet/findByStatus for all statuses
+    // and redirect to /pet so call of getAllPets()
+    public function getAllPets($status = ["available", "pending", "sold"])
     {
         $pets = [
             new Pet(1, "dog", "Buddy", "some\photo\url", '', "available"),
@@ -24,31 +44,56 @@ class PetController extends Controller
         return view('pet.index', ['pets' => $pets]);
     }
 
-    public function getPetByIDforEdit($id) {
-        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
-
-        // from this form put on /pets will be called
-        return view('pet.formPet', ['pet' => $pet]);
+    // post on /pet
+    // and redirect to /pet so call of getAllPets()
+    public function createNewPet()
+    {
+        echo 'Create a new pet should be triggered';
     }
 
-    public function updateNameStatusOfGivenPet($id) {
-        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
-
-        // from this form post on /pets/{id} will be called
-        return view('pet.formShort', ['pet' => $pet]);
+    // put on /pet
+    // and redirect to /pet so call of getAllPets()
+    public function editExistingPet()
+    {
+        echo 'Edit of all pet\' data should be triggered';
     }
 
-    public function createNewPet(){}
+    // not yet added
+    // get on /pet/{id} requires only id
+    // and call view which getAllPets() is calling, but with different data
+    // for this function $id is inside the request
+    public function getPet()
+    {
+        echo 'Get a pet should be triggered';
+    }
 
-    public function editExistingPet(){}
+    // post on /pet/{id}
+    // and redirect to /pet so call of getAllPets()
+    public function editPetNameAndStatus($id)
+    {
+        echo 'Edit a pet\' name and status should be triggered';
+    }
 
-    public function getPet($id){}
+    // delete on /pet/{id}
+    // and redirect to /pet so call of getAllPets()
+    public function deletePet($id)
+    {
+        echo 'Delete a pet should be triggered';
+    }
 
-    public function editPet($id){}
+    // post on /pet/{id}/uploadImage
+    // and redirect to /pet so call of getAllPets()
+    public function uploadImageForPet($id)
+    {
+        echo 'Upload of an image for a pet should be triggered';
+    }
 
-    public function deletePet($id){}
-
-    public function uploadImageForPet($id){}
-
-    public function findPetByStatus($id){}
+    // not yet added
+    // get on /pet/findByStatus for all selected status
+    // so simply call to /pet so call getAllPets() with selected status
+    // for this function $status is inside the request
+    public function findPetByStatus()
+    {
+        echo 'Find pets by status should be triggered';
+    }
 }
