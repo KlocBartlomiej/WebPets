@@ -10,13 +10,6 @@
         required
         onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-      <input
-        value="{{ $pet->getCategory() }}"
-        type="hidden"
-        name="category"
-        id="category"
-        required
-        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
       <div>
         <label for="name" class="block text-sm/6 font-medium text-gray-900">name</label>
         <div class="mt-2">
@@ -30,22 +23,6 @@
             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
         </div>
       </div>
-      <input
-        value="{{ $pet->getPhotoUrls() }}"
-        type="hidden"
-        name="photoUrls"
-        id="photoUrls"
-        autocomplete="photoUrls"
-        required
-        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-      <input
-        value="{{ $pet->getTags() }}"
-        type="hidden"
-        name="tags"
-        id="tags"
-        autocomplete="tags"
-        required
-        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
       <div>
         <label for="status" class="block text-sm/6 font-medium text-gray-900">status</label>
         <div class="mt-2">

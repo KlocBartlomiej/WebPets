@@ -6,7 +6,6 @@
     <h2>You can also select which ID or status of pet your are looking for:</h2>
     <form class="space-y-5" action="/pet/findById" method="POST">
         @csrf
-        @method('GET')
         <label for="id" class="block text-sm/6 font-medium text-gray-900">Identifier</label>
         <input
             type="number"

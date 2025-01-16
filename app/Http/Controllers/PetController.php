@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 
 use App\Models\Pet;
+use GuzzleHttp\Psr7\Request;
 
 class PetController extends Controller
 {
@@ -12,88 +13,107 @@ class PetController extends Controller
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client(['base_uri' => 'https://petstore.swagger.io/v2/']);
     }
 
     public function updateAllOfGivenPet($id)
     {
-        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
+        $pet = self::castToPet(self::request('GET', 'pet/' . $id));
         return view('pet.formPet', ['pet' => $pet]);
     }
 
-    public function uploadImgForGivenPet() {
-        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
+    public function uploadImgForGivenPet($id)
+    {
+        $pet = self::castToPet(self::request('GET', 'pet/' . $id));
         return view('pet.formImg', ['pet' => $pet]);
     }
 
-    // it needs only id and a file
     public function updateNameAndStatusOfGivenPet($id)
     {
-        $pet = new Pet(1, "dog", "Buddy", "some\photo\url", '', "available");
+        $pet = self::castToPet(self::request('GET', 'pet/' . $id));
         return view('pet.formShort', ['pet' => $pet]);
     }
 
-    // get on /pet/findByStatus for all statuses
-    // and redirect to /pet so call of getAllPets()
-    public function getAllPets($status = ["available", "pending", "sold"])
+    public function getAllPets()
     {
-        $pets = [
-            new Pet(1, "dog", "Buddy", "some\photo\url", '', "available"),
-            new Pet(2, "dog", "Amik", "some\photo\url", '', "pending")
-        ];
+        $pets = self::castToPets(self::request('GET', 'pet/findByStatus?status=available'));
         return view('pet.index', ['pets' => $pets]);
     }
 
-    // post on /pet
-    // and redirect to /pet so call of getAllPets()
     public function createNewPet()
     {
         echo 'Create a new pet should be triggered';
     }
 
-    // put on /pet
-    // and redirect to /pet so call of getAllPets()
-    public function editExistingPet()
-    {
-        echo 'Edit of all pet\' data should be triggered';
-    }
-
-    // not yet added
-    // get on /pet/{id} requires only id
-    // and call view which getAllPets() is calling, but with different data
-    // for this function $id is inside the request
     public function getPet()
     {
-        echo 'Get a pet should be triggered';
+        $pet = self::castToPet(self::request('GET', 'pet/' . $_POST['id']));
+        return view('pet.index', ['pets' => [$pet]]);
     }
 
-    // post on /pet/{id}
-    // and redirect to /pet so call of getAllPets()
+    public function editExistingPet()
+    {
+        self::request('PUT', 'pet');
+        return redirect('/pet');
+    }
+
     public function editPetNameAndStatus($id)
     {
-        echo 'Edit a pet\' name and status should be triggered';
+        self::request('POST', 'pet/' . $id);
+        return redirect('/pet');
     }
 
-    // delete on /pet/{id}
-    // and redirect to /pet so call of getAllPets()
     public function deletePet($id)
     {
-        echo 'Delete a pet should be triggered';
+        self::request('DELETE', 'pet/' . $id);
+        return redirect('/pet');
     }
 
-    // post on /pet/{id}/uploadImage
-    // and redirect to /pet so call of getAllPets()
     public function uploadImageForPet($id)
     {
-        echo 'Upload of an image for a pet should be triggered';
+        self::request('POST', 'pet/' . $id . '/uploadImage');
+        return redirect('/pet');
     }
 
-    // not yet added
-    // get on /pet/findByStatus for all selected status
-    // so simply call to /pet so call getAllPets() with selected status
-    // for this function $status is inside the request
     public function findPetByStatus()
     {
-        echo 'Find pets by status should be triggered';
+        $pets = self::castToPets(self::request('GET', 'pet/findByStatus?status=' . $_POST['status']));
+        return view('pet.index', ['pets' => $pets]);
+    }
+
+    private function request(string $method, string $url, array $headers = [], string $payload = ''): string
+    {
+        $base_headers = [
+            'Content-type' => "application/json"
+        ];
+
+        $headers = array_merge($headers, $base_headers);
+
+        $request = new Request($method, $url, $headers, $payload);
+
+        $response = $this->client->send($request);
+
+        if($response->getStatusCode() != 200) {
+            abort($response->getStatusCode());
+        }
+
+        return $response->getBody()->getContents();
+    }
+
+    private function castToPets($json): array
+    {
+        $results = json_decode($json, true);
+        $pets = [];
+
+        foreach ($results as $result) {
+            $pets[] = new Pet($result);
+        }
+
+        return $pets;
+    }
+
+    private function castToPet($json): Pet
+    {
+        return new Pet(json_decode($json, true));
     }
 }
