@@ -5,8 +5,6 @@ namespace App\Models;
 use App\Models\Status;
 use Exception;
 
-// TODO: I'll have to use this class inside category and tags, as those arrays contains id and name elements
-//      where photoUrls is just a array of strings
 class ArrayElement
 {
     private int $id;
@@ -32,7 +30,7 @@ class ArrayElement
 class Pet
 {
     private int $id;
-    private array $category;
+    private ArrayElement $category;
     private string $name;
     private array $photoUrls;
     private array $tags;
@@ -40,38 +38,33 @@ class Pet
 
     public function __construct(array $values)
     {
-        try{
         $this->id = $values['id'] ? (int)$values['id'] : '';
 
-        // if (array_key_exists('category', $values)) {
-        //     $this->category = [];
-        //     foreach ($values['category'] as $category) {
-        //         $this->category[] = new ArrayElement($category['id'], $category['name']);
-        //     }
-        // }
-        $this->category = $values['category'] ?? [];
+        if (array_key_exists('category', $values) && array_key_exists('name', $values['category'])) {
+            $this->category = new ArrayElement($values['category']['id'], $values['category']['name']);
+        } else {
+            $this->category = new ArrayElement(0, '');
+        }
 
         $this->name = $values['name'] ?? '';
 
+        $this->photoUrls = [];
         if (array_key_exists('photoUrls', $values)) {
-            $this->category = [];
-            foreach ($values['photoUrls'] as $category) {
-                $this->category[] = $category;
+            foreach ($values['photoUrls'] as $photoUrl) {
+                $this->photoUrls[] = $photoUrl;
             }
         }
 
-        // if (array_key_exists('tags', $values)) {
-        //     $this->tags = [];
-        //     foreach ($values['tags'] as $tag) {
-        //         $this->tags[] = new ArrayElement($tag['id'], $tag['name']);
-        //     }
-        // }
-        $this->tags = $values['tags'] ?? [];
+        $this->tags = [];
+        if (array_key_exists('tags', $values)) {
+            foreach ($values['tags'] as $tag) {
+                if (array_key_exists('name', $tag)) {
+                    $this->tags[] = new ArrayElement($tag['id'], $tag['name']);
+                }
+            }
+        }
 
         $this->status = $values['status'] ? Status::getStatusFromString($values['status']) : '';
-        } catch(Exception $e) {
-            dd($values);
-        }
     }
 
     public function getId(): int
@@ -81,7 +74,7 @@ class Pet
 
     public function getCategory(): string
     {
-        return implode(',', $this->category);
+        return $this->category->getName();
     }
 
     public function getName(): string
@@ -91,12 +84,21 @@ class Pet
 
     public function getPhotoUrls(): string
     {
-        return isset($this->photoUrls) ? implode(',', $this->photoUrls) : '';
+        return implode(',', $this->photoUrls);
+    }
+
+    public function getArrayPhotoUrls(): array
+    {
+        return $this->photoUrls;
     }
 
     public function getTags(): string
     {
-        return is_array($this->tags) ? implode(',', $this->tags[0]) : implode(',', $this->tags);
+        $result = [];
+        foreach ($this->tags as $tag) {
+            $result[] = $tag->getName();
+        }
+        return implode(',', $result);
     }
 
     public function getStatus(): string

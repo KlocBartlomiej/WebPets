@@ -1,6 +1,6 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form class="space-y-5" action="/pet/{{ $pet->getID() }}" method="POST">
+    <form class="space-y-5" action="/pet/{{ $pet->getId() }}" method="POST">
       @csrf
       <input
         value="{{ $pet->getId() }}"

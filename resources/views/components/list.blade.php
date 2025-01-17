@@ -5,6 +5,11 @@
             <p class="text-sm/6 font-semibold text-gray-900">{{ $pet->getName() }}</p>
             <p class="text-sm/6 text-gray-900">{{ $pet->getStatus() }}</p>
         </div>
+        <a href="/pet/details/{{ $pet->getId() }}">
+            <button class="flex w-full justify-center rounded-md bg-orange-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Show pet's data
+            </button>
+        </a>
         <a href="/pet/formEdit/{{ $pet->getId() }}">
             <button class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Edit
