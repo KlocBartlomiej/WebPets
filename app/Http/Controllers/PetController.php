@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 
 use App\Models\Pet;
 use Exception;
+use GuzzleHttp\BodySummarizer;
 use GuzzleHttp\Psr7\Request;
 
 class PetController extends Controller
@@ -59,7 +60,12 @@ class PetController extends Controller
 
     public function createNewPet()
     {
-        echo 'Create a new pet should be triggered';
+        $pet = self::formToJson($_POST['id'], $_POST['category'], $_POST['name'], $_POST['photoUrls'], $_POST['tags'], $_POST['status']);
+
+        self::request('POST', 'pet', [
+            'Content-type' => "application/json"
+        ], $pet);
+        return redirect('/pet');
     }
 
     public function getPet()
@@ -72,9 +78,11 @@ class PetController extends Controller
 
     public function editExistingPet()
     {
+        $pet = self::formToJson($_POST['id'], $_POST['category'], $_POST['name'], $_POST['photoUrls'], $_POST['tags'], $_POST['status']);
+
         self::request('PUT', 'pet', [
             'Content-type' => "application/json"
-        ]);
+        ], $pet);
         return redirect('/pet');
     }
 
@@ -84,7 +92,7 @@ class PetController extends Controller
             'name' => $_POST['name'],
             'status' => $_POST['status']
         ];
-        self::request('POST', 'pet/' . $id . '?' . http_build_query($form,'','&'), [
+        self::request('POST', 'pet/' . $id . '?' . http_build_query($form, '', '&'), [
             'Content-type' => 'application/x-www-form-urlencoded',
         ]);
         return redirect('/pet');
@@ -142,5 +150,27 @@ class PetController extends Controller
     private function castToPet($json): Pet
     {
         return new Pet(json_decode($json, true));
+    }
+
+    private function formToJson($id, $category, $name, $photoUrls, $tags, $status): string
+    {
+        $petJson = '{"id" : ' . $id . ',"category" : {"id" : 0,"name" : "' . $category . '"},"name" : "' . $name . '","photoUrls" : [';
+
+        foreach (explode(',', $photoUrls) as $photoUrl) {
+            $petJson .= '"' . $photoUrl . '",';
+        }
+
+        $petJson = substr_replace($petJson, '', -1);
+        $petJson .= '],"tags" : [';
+
+        $id = 0;
+        foreach (explode(',', $tags) as $tag) {
+            $petJson .= '{"id" : ' . $id++ . ',"name" : "' . $tag . '"},';
+        }
+
+        $petJson = substr_replace($petJson, '', -1);
+        $petJson .= '],"status" : "' . $status . '"}';
+
+        return $petJson;
     }
 }

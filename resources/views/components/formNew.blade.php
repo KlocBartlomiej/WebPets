@@ -15,7 +15,7 @@
         </div>
       </div>
       <div>
-        <label for="category" class="block text-sm/6 font-medium text-gray-900">Categories (can get multiple values separated by coma)</label>
+        <label for="category" class="block text-sm/6 font-medium text-gray-900">Category</label>
         <div class="mt-2">
           <input
             type="text"
