@@ -107,11 +107,17 @@ class PetController extends Controller
     }
 
     public function uploadImageForPet($id)
-    {
-        self::request('POST', 'pet/' . $id . '/uploadImage?file=' . $_POST['file-upload'] . '&type=image/jpeg', [
-            'Content-type' => "multipart/form-data"
-        ]);
-        return redirect('/pet');
+    {// TODO: WIP
+        // self::request('POST', 'pet/' . $id . '/uploadImage',[//?file=' . $_POST['file-upload'] . '&type=image/jpeg', [
+        //     'Content-type' => "multipart/form-data",
+        //     'multipart' => [
+        //     [
+        //         'name'     => 'image',
+        //         'contents' => fopen($_POST['file-upload'] , 'r')
+        //     ]
+        // ]
+        // ]);
+        // return redirect('/pet');
     }
 
     public function findPetByStatus()

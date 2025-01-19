@@ -4,7 +4,7 @@
       @csrf
       @method('PUT')
       <div>
-        <label for="id" class="block text-sm/6 font-medium text-gray-900">Identifier</label>
+        <label for="id" class="block text-sm/6 font-medium text-gray-900">Identifier (changing it will result in adding another pet)</label>
         <div class="mt-2">
           <input
             value="<?= isset($pet) ? $pet->getId() : '' ?>"
