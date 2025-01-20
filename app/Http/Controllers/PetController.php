@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
 
 use App\Models\Pet;
-use Exception;
-use GuzzleHttp\BodySummarizer;
-use GuzzleHttp\Psr7\Request;
+
+use Illuminate\Validation\Rule;
 
 class PetController extends Controller
 {
@@ -60,7 +61,16 @@ class PetController extends Controller
 
     public function createNewPet()
     {
-        $pet = self::formToJson($_POST['id'], $_POST['category'], $_POST['name'], $_POST['photoUrls'], $_POST['tags'], $_POST['status']);
+        request()->validate([
+            'id' => ['required', 'numeric'],
+            'category' => ['required', 'string'],
+            'name' => ['required', 'min:3'],
+            'photoUrls' => ['required'],
+            'tags' => ['required', 'string'],
+            'status' => ['required', Rule::in(['available', 'pending', 'sold'])]
+        ]);
+
+        $pet = self::formToJson(request('id'), request('category'), request('name'), request('photoUrls'), request('tags'), request('status'));
 
         self::request('POST', 'pet', [
             'Content-type' => "application/json"
@@ -70,7 +80,7 @@ class PetController extends Controller
 
     public function getPet()
     {
-        $pet = self::castToPet(self::request('GET', 'pet/' . $_POST['id'], [
+        $pet = self::castToPet(self::request('GET', 'pet/' . request('id'), [
             'Content-type' => "application/json"
         ]));
         return view('pet.index', ['pets' => [$pet]]);
@@ -78,7 +88,16 @@ class PetController extends Controller
 
     public function editExistingPet()
     {
-        $pet = self::formToJson($_POST['id'], $_POST['category'], $_POST['name'], $_POST['photoUrls'], $_POST['tags'], $_POST['status']);
+        request()->validate([
+            'id' => ['required', 'numeric'],
+            'category' => ['required', 'string'],
+            'name' => ['required', 'min:3'],
+            'photoUrls' => ['required'],
+            'tags' => ['required', 'string'],
+            'status' => ['required', Rule::in(['available', 'pending', 'sold'])]
+        ]);
+
+        $pet = self::formToJson(request('id'), request('category'), request('name'), request('photoUrls'), request('tags'), request('status'));
 
         self::request('PUT', 'pet', [
             'Content-type' => "application/json"
@@ -88,9 +107,14 @@ class PetController extends Controller
 
     public function editPetNameAndStatus($id)
     {
+        request()->validate([
+            'name' => ['required', 'min:3'],
+            'status' => ['required', Rule::in(['available', 'pending', 'sold'])]
+        ]);
+
         $form = [
-            'name' => $_POST['name'],
-            'status' => $_POST['status']
+            'name' => request('name'),
+            'status' => request('status'),
         ];
         self::request('POST', 'pet/' . $id . '?' . http_build_query($form, '', '&'), [
             'Content-type' => 'application/x-www-form-urlencoded',
@@ -107,7 +131,7 @@ class PetController extends Controller
     }
 
     public function uploadImageForPet($id)
-    {// TODO: WIP
+    { // TODO: WIP
         // self::request('POST', 'pet/' . $id . '/uploadImage',[//?file=' . $_POST['file-upload'] . '&type=image/jpeg', [
         //     'Content-type' => "multipart/form-data",
         //     'multipart' => [
@@ -122,7 +146,7 @@ class PetController extends Controller
 
     public function findPetByStatus()
     {
-        $pets = self::castToPets(self::request('GET', 'pet/findByStatus?status=' . $_POST['status'], [
+        $pets = self::castToPets(self::request('GET', 'pet/findByStatus?status=' . request('status'), [
             'Content-type' => "application/json"
         ]));
         return view('pet.index', ['pets' => $pets]);
@@ -132,9 +156,10 @@ class PetController extends Controller
     {
         $request = new Request($method, $url, $headers, $payload);
 
-        $response = $this->client->send($request);
-
-        if ($response->getStatusCode() != 200) {
+        try {
+            $response = $this->client->send($request);
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
             abort($response->getStatusCode());
         }
 
